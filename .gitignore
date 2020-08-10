@@ -2,5 +2,6 @@
 .allure
 target
 *.iml
+*.log
 *.DS_Store
 test_artefacts
