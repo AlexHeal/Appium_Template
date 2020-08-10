@@ -1,0 +1,8 @@
+{
+  "iOSversion": "13.4",
+  "appPath": "/Users/aleksandr/Downloads/Fiverr/praveenkumar05/MOV-PA.app",
+  "noReset": "false",
+  "platform": "iOS",
+  "appiumServer": "http://0.0.0.0:4723/wd/hub",
+  "deviceName": "iPhone 8 Plus"
+}
