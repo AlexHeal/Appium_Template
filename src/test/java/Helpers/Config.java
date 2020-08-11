@@ -7,6 +7,43 @@ public class Config {
     private String platform;
     private String deviceName;
     private String appiumServer;
+    private String udid;
+    private String bundleid;
+    private String xcodeOrgId;
+    private String updatedWDABundleId;
+
+    public String getUdid() {
+        return udid;
+    }
+
+    public void setUdid(String udid) {
+        this.udid = udid;
+    }
+
+    public String getBundleid() {
+        return bundleid;
+    }
+
+    public void setBundleid(String bundleid) {
+        this.bundleid = bundleid;
+    }
+
+    public String getXcodeOrgId() {
+        return xcodeOrgId;
+    }
+
+    public void setXcodeOrgId(String xcodeOrgId) {
+        this.xcodeOrgId = xcodeOrgId;
+    }
+
+    public String getUpdatedWDABundleId() {
+        return updatedWDABundleId;
+    }
+
+    public void setUpdatedWDABundleId(String updatedWDABundleId) {
+        this.updatedWDABundleId = updatedWDABundleId;
+    }
+
 
     public String getiOSversion() {
         return iOSversion;

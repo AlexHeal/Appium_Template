@@ -4,5 +4,8 @@
   "noReset": "false",
   "platform": "iOS",
   "appiumServer": "http://0.0.0.0:4723/wd/hub",
-  "deviceName": "iPhone 8 Plus"
+  "deviceName": "iPhone 8 Plus",
+  "bundleId": "",
+  "xcodeOrgId": "",
+  "updatedWDABundleId": ""
 }

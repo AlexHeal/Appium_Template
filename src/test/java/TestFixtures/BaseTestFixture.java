@@ -5,7 +5,7 @@ import Helpers.Log;
 import Helpers.TakeScreenExtension;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.MobileElement;
-import io.appium.java_client.android.AndroidDriver;
+import io.appium.java_client.ios.IOSDriver;
 import io.appium.java_client.remote.MobileCapabilityType;
 import org.apache.http.ParseException;
 import org.json.JSONObject;
@@ -23,6 +23,10 @@ import java.nio.file.Paths;
 
 public abstract class BaseTestFixture {
     protected AppiumDriver<MobileElement> driver;
+
+    public static boolean isNullOrEmpty(String str) {
+        return str == null || str.isEmpty();
+    }
 
     @BeforeEach
     public void setUp(TestInfo testInfo) {
@@ -87,11 +91,22 @@ public abstract class BaseTestFixture {
         capabilities.setCapability(MobileCapabilityType.PLATFORM_NAME, config.getPlatform());
         capabilities.setCapability(MobileCapabilityType.AUTOMATION_NAME, "XCUITest");
 
+        // important for run on real device
+        capabilities.setCapability("udid", "auto");
+        capabilities.setCapability("xcodeSigningId", "iPhone Developer");
+        if (isNullOrEmpty(config.getBundleid()))
+            capabilities.setCapability("bundleId", config.getBundleid());
+        if (isNullOrEmpty(config.getXcodeOrgId()))
+            capabilities.setCapability("xcodeOrgId", config.getXcodeOrgId());
+        if (isNullOrEmpty(config.getUpdatedWDABundleId()))
+            capabilities.setCapability("updatedWDABundleId", config.getUpdatedWDABundleId());
+
         // optional
         capabilities.setCapability("autoGrantPermissions", true);
-        capabilities.setCapability("autoAcceptAlerts", true);
+        capabilities.setCapability("unicodeKeyboard", true);
+        capabilities.setCapability("resetKeyboard", true);
         capabilities.setCapability(MobileCapabilityType.NO_RESET, config.getNoReset());
 
-        driver = new AppiumDriver<>(driverUrl, capabilities);
+        driver = new IOSDriver<>(driverUrl, capabilities);
     }
 }
