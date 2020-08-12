@@ -1,16 +1,38 @@
 package Helpers;
 
 public class Config {
-    private String iOSversion;
-    private String appPath;
     private String noReset;
     private String platform;
     private String deviceName;
     private String appiumServer;
+
+    // android
+    public String androidVersion;
+    public String apkPath;
+
+    // iOS
+    private String iOSversion;
+    private String appPath;
     private String udid;
     private String bundleid;
     private String xcodeOrgId;
     private String updatedWDABundleId;
+
+    public String getAndroidVersion() {
+        return androidVersion;
+    }
+
+    public void setAndroidVersion(String androidVersion) {
+        this.androidVersion = androidVersion;
+    }
+
+    public String getApkPath() {
+        return apkPath;
+    }
+
+    public void setApkPath(String apkPath) {
+        this.apkPath = apkPath;
+    }
 
     public String getUdid() {
         return udid;
