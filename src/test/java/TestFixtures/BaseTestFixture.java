@@ -5,6 +5,7 @@ import Helpers.Log;
 import Helpers.TakeScreenExtension;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.MobileElement;
+import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.ios.IOSDriver;
 import io.appium.java_client.remote.MobileCapabilityType;
 import org.apache.http.ParseException;
@@ -35,6 +36,7 @@ public abstract class BaseTestFixture {
         new TakeScreenExtension().InitPath(testInfo.getDisplayName());
 
         Config config = setProjectConfig("config");
+        assert config != null;
         initMobileDriver(config);
     }
 
@@ -57,11 +59,17 @@ public abstract class BaseTestFixture {
             JSONObject jsonFile = new JSONObject(content);
 
             Config currentConfig = new Config();
+            currentConfig.setPlatform(jsonFile.getString("platform"));
+            currentConfig.setNoReset(jsonFile.getString("noReset"));
+            currentConfig.setAppiumServer(jsonFile.getString("appiumServer"));
+
+            // android
+            currentConfig.setAndroidVersion(jsonFile.getString("androidVersion"));
+            currentConfig.setApkPath(jsonFile.getString("apkPath"));
+
+            // ios
             currentConfig.setiOSversion(jsonFile.getString("iOSversion"));
             currentConfig.setAppPath(jsonFile.getString("appPath"));
-            currentConfig.setNoReset(jsonFile.getString("noReset"));
-            currentConfig.setPlatform(jsonFile.getString("platform"));
-            currentConfig.setAppiumServer(jsonFile.getString("appiumServer"));
             currentConfig.setDeviceName(jsonFile.getString("deviceName"));
 
             return currentConfig;
@@ -85,28 +93,47 @@ public abstract class BaseTestFixture {
         }
 
         // important
-        capabilities.setCapability(MobileCapabilityType.APP, config.getAppPath());
-        capabilities.setCapability(MobileCapabilityType.PLATFORM_VERSION, config.getiOSversion());
-        capabilities.setCapability(MobileCapabilityType.DEVICE_NAME, config.getDeviceName());
         capabilities.setCapability(MobileCapabilityType.PLATFORM_NAME, config.getPlatform());
-        capabilities.setCapability(MobileCapabilityType.AUTOMATION_NAME, "XCUITest");
+        if(config.getPlatform().equals("iOS")) {
+            capabilities.setCapability(MobileCapabilityType.APP, config.getAppPath());
+            capabilities.setCapability(MobileCapabilityType.PLATFORM_VERSION, config.getiOSversion());
+            capabilities.setCapability(MobileCapabilityType.DEVICE_NAME, config.getDeviceName());
+            capabilities.setCapability(MobileCapabilityType.AUTOMATION_NAME, "XCUITest");
+        } else if(config.getPlatform().equals("android")) {
+            capabilities.setCapability(MobileCapabilityType.APP, config.getApkPath());
+            capabilities.setCapability(MobileCapabilityType.PLATFORM_VERSION, config.getAndroidVersion());
+            capabilities.setCapability(MobileCapabilityType.DEVICE_NAME, "default");
+            capabilities.setCapability(MobileCapabilityType.PLATFORM_NAME, "android");
+//            capabilities.setCapability("ignoreUnimportantViews", true);
+//            capabilities.setCapability("disableAndroidWatchers", true);
+//            capabilities.setCapability("newCommandTimeout", 10000);
+//            capabilities.setCapability("androidInstallTimeout", 150000);
+            capabilities.setCapability(MobileCapabilityType.AUTOMATION_NAME, "UiAutomator2");
+            capabilities.setCapability("skipUnlock", "true");
+        }
 
         // important for run on real device
-        capabilities.setCapability("udid", "auto");
-        capabilities.setCapability("xcodeSigningId", "iPhone Developer");
-        if (isNullOrEmpty(config.getBundleid()))
-            capabilities.setCapability("bundleId", config.getBundleid());
-        if (isNullOrEmpty(config.getXcodeOrgId()))
-            capabilities.setCapability("xcodeOrgId", config.getXcodeOrgId());
-        if (isNullOrEmpty(config.getUpdatedWDABundleId()))
-            capabilities.setCapability("updatedWDABundleId", config.getUpdatedWDABundleId());
-
+        if(config.getPlatform().equals("iOS")) {
+            capabilities.setCapability("udid", "auto");
+            capabilities.setCapability("xcodeSigningId", "iPhone Developer");
+            if (isNullOrEmpty(config.getBundleid()))
+                capabilities.setCapability("bundleId", config.getBundleid());
+            if (isNullOrEmpty(config.getXcodeOrgId()))
+                capabilities.setCapability("xcodeOrgId", config.getXcodeOrgId());
+            if (isNullOrEmpty(config.getUpdatedWDABundleId()))
+                capabilities.setCapability("updatedWDABundleId", config.getUpdatedWDABundleId());
+        }
         // optional
         capabilities.setCapability("autoGrantPermissions", true);
+        capabilities.setCapability("autoAcceptAlerts", true);
         capabilities.setCapability("unicodeKeyboard", true);
         capabilities.setCapability("resetKeyboard", true);
         capabilities.setCapability(MobileCapabilityType.NO_RESET, config.getNoReset());
 
-        driver = new IOSDriver<>(driverUrl, capabilities);
+        if(config.getPlatform().equals("iOS")) {
+            driver = new IOSDriver<>(driverUrl, capabilities);
+        } else {
+            driver = new AndroidDriver<>(driverUrl, capabilities);
+        }
     }
 }

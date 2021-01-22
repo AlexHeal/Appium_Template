@@ -1,10 +1,10 @@
 {
-  "platform": "iOS",
-  "noReset": "false",
+  "platform": "android",
+  "noReset": "true",
   "appiumServer": "http://0.0.0.0:4723/wd/hub",
 
   "androidVersion": "9.0",
-  "apkPath": "/Users/aleksandr/Downloads/MOV-PA.apk",
+  "apkPath": "/Users/aleksandr/Downloads/Fiverr/papers_ch/airgap.apk",
 
   "iOSversion": "13.4",
   "appPath": "/Users/aleksandr/Downloads/MOV-PA.app",
